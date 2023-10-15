@@ -19,6 +19,10 @@ class ServiceViewModel : ViewModel() {
 
     val currentRandomValue = MutableLiveData<Int>(0)
 
+    val _remoteServiceStarted = MutableLiveData(false)
+
+
+    val _remoteServiceStopped = MutableLiveData(false)
     fun setServiceStarted() {
         _serviceStarted.value = true
     }
@@ -37,6 +41,14 @@ class ServiceViewModel : ViewModel() {
 
     fun setRandomValue(value: Int) {
         currentRandomValue.postValue(value)
+    }
+
+    fun setRemoteServiceStarted() {
+        _remoteServiceStarted.value = true
+    }
+
+    fun setRemoteServiceStopped() {
+        _remoteServiceStopped.value = true
     }
 
 }

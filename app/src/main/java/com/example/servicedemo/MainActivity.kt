@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.servicedemo.local_binding.LocalBindingService
 import com.example.servicedemo.local_binding.ServiceViewModel
+import com.example.servicedemo.remote_binding.RemoteBindingService
 import com.example.servicedemo.ui.theme.ServiceDemoTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
             val serviceIntent: Intent =
                 Intent(this, LocalBindingService::class.java)
 
+            val remoteServiceIntent = Intent(this, RemoteBindingService::class.java)
             ServiceDemoTheme {
                 serviceViewModel._serviceStarted.observe(this) { value ->
                     if (value.not()) return@observe
@@ -56,6 +58,12 @@ class MainActivity : ComponentActivity() {
                 serviceViewModel._serviceUnBind.observe(this) { value ->
                     if (value.not()) return@observe
                     removeConnection()
+                }
+                serviceViewModel._remoteServiceStarted.observe(this) {
+                    startService(remoteServiceIntent)
+                }
+                serviceViewModel._remoteServiceStopped.observe(this) {
+                    stopService(remoteServiceIntent)
                 }
                 ShowCount(serviceViewModel)
             }
@@ -132,6 +140,7 @@ private fun ShowCount(serviceViewModel: ServiceViewModel) {
             val unBindService = {
                 serviceViewModel.setServiceUnBind()
             }
+
             Button(onClick = { startService.invoke() }) {
                 Text(text = "Start Service")
             }
@@ -151,7 +160,14 @@ private fun ShowCount(serviceViewModel: ServiceViewModel) {
             Text(text = "Bound Service", color = Color.Green)
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Count is  : $randomNumber")
-
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = { serviceViewModel.setRemoteServiceStarted() }) {
+                Text(text = "Start Remote Service")
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = { serviceViewModel.setRemoteServiceStopped() }) {
+                Text(text = "Stop Remote Service")
+            }
         }
     }
 }

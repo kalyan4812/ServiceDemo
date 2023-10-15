@@ -23,8 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".local_binding.LocalBindingService"
+            android:exported="true" />
+        <service
+            android:name=".remote_binding.RemoteBindingService"
+            android:enabled="true"
             android:exported="true" />
     </application>
 
