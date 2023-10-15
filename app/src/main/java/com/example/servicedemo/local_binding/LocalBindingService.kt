@@ -47,11 +47,8 @@ class LocalBindingService : Service() {
         return START_STICKY
     }
 
-    fun stopBinding() {
-        continueBinding.set(false)
-    }
 
-    fun getRandomNumber() = randomNumber
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -60,15 +57,28 @@ class LocalBindingService : Service() {
     }
 
     inner class CustomBinder : Binder() {
-        fun getService() = this@LocalBindingService
+
+
+        fun setDataValueChangeListener(mValueChangeListener: DataValueChangeListener) {
+            valueChangeListener = mValueChangeListener
+        }
+
+        fun stopBinding() {
+            continueBinding.set(false)
+        }
+
     }
 
+    private var valueChangeListener: DataValueChangeListener? = null
     fun interface DataValueChangeListener {
         fun onValueChange(value: Int?)
     }
 
-    private var valueChangeListener: DataValueChangeListener? = null
-    fun setDataValueChangeListener(valueChangeListener: DataValueChangeListener) {
-        this.valueChangeListener = valueChangeListener
-    }
 }
+/*
+1)YourService extends Service and includes a custom YourBinder class.
+2)In the YourBinder class, you define methods that represent the functionality
+you want to expose to the client (Activity).
+3)In the onBind method, you return an instance of YourBinder,
+allowing the client (Activity) to obtain a reference to the Service.
+ */

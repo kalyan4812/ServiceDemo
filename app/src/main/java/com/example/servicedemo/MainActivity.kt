@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
     private val serviceViewModel: ServiceViewModel by viewModels()
     private var serviceConnection: ServiceConnection? = null
     private var isServiceBound: Boolean = false
-    private var runningService: LocalBindingService? = null
+    private var binder: LocalBindingService.CustomBinder? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
             serviceConnection?.let {
                 unbindService(it)
             }
-            runningService?.stopBinding()
+            binder?.stopBinding()
             serviceViewModel.setRandomValue(0)
             isServiceBound = false
         }
@@ -80,10 +80,10 @@ class MainActivity : ComponentActivity() {
             serviceConnection = object : ServiceConnection {
                 override fun onServiceConnected(p0: ComponentName?, mBinder: IBinder?) {
                     isServiceBound = true
+                    // here we get binder of service through which we can call methods of service.
                     val binder: LocalBindingService.CustomBinder? =
                         mBinder as? LocalBindingService.CustomBinder
-                    runningService = (binder?.getService())
-                    runningService?.setDataValueChangeListener { value ->
+                    binder?.setDataValueChangeListener { value ->
                         if (isServiceBound.not()) return@setDataValueChangeListener
                         value?.let {
                             serviceViewModel.setRandomValue(it)
@@ -97,6 +97,8 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
+        // binding to our service intent.
         bindService(
             serviceIntent,
             serviceConnection!!,

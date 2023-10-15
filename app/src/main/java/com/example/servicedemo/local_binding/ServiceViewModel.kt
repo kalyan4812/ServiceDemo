@@ -1,6 +1,5 @@
 package com.example.servicedemo.local_binding
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
